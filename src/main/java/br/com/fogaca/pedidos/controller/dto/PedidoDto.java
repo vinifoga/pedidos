@@ -5,13 +5,18 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
+
+import org.springframework.data.domain.Page;
 
 import br.com.fogaca.pedidos.model.Pedido;
 import br.com.fogaca.pedidos.model.PedidoItem;
 import br.com.fogaca.pedidos.model.SituacaoPedido;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
+@Getter
+@Setter
 public class PedidoDto {
     private UUID id;
     private String cpfCnpjComprador;
@@ -33,5 +38,13 @@ public class PedidoDto {
         this.dataCadastro = pedido.getDataCadastro();
         this.usuarioId = pedido.getUsuario().getId();
         this.itensPedido = pedido.getItensPedido();       
+    }
+
+    public static Page<PedidoDto> converterPedidoDtoPage(Page<Pedido> pedidos){
+        return pedidos.map(PedidoDto::new);
+    }
+
+    public static List<PedidoDto> converterUsuarioDtoList(List<Pedido> pedidos){
+        return pedidos.stream().map(PedidoDto::new).collect(Collectors.toList());
     }
 }

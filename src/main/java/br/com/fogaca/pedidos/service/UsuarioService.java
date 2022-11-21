@@ -9,6 +9,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import br.com.fogaca.pedidos.exception.BadRequestException;
 import br.com.fogaca.pedidos.model.Usuario;
 import br.com.fogaca.pedidos.repository.UsuarioRepository;
 
@@ -22,8 +23,8 @@ public class UsuarioService {
         return usuarioRepository.findAll();
     }
 
-    public Optional<Usuario> findById(UUID id){
-        return usuarioRepository.findById(id);
+    public Usuario findById(UUID id){
+        return usuarioRepository.findById(id).orElseThrow(()-> new BadRequestException("Objeto não encontrado"));
     }
 
     public void save(Usuario usuario){

@@ -7,9 +7,11 @@ import java.util.stream.Collectors;
 import org.springframework.data.domain.Page;
 
 import br.com.fogaca.pedidos.model.Usuario;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
+@Getter
+@Setter
 public class UsuarioDto {
     private UUID id;
     private String nomeUsuario;

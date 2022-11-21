@@ -59,5 +59,19 @@ public class ProdutoServico {
         this.ativo = ativo;
     }
 
+    public ProdutoServico(UUID id, Tipo tipo, String marca, String descricao, BigDecimal valorCusto,
+            BigDecimal valorVenda, Double quantidadeDisponivel, boolean ativo) {
+        this.id = id;
+        this.tipo = tipo;
+        this.marca = marca;
+        this.descricao = descricao;
+        this.valorCusto = valorCusto;
+        this.valorVenda = valorVenda;
+        this.quantidadeDisponivel = quantidadeDisponivel;
+        this.ativo = ativo;
+    }
+
+    
+
     
 }

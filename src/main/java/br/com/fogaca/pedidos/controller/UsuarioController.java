@@ -1,7 +1,6 @@
 package br.com.fogaca.pedidos.controller;
 
 import java.net.URI;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -11,6 +10,10 @@ import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort.Direction;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -36,19 +39,21 @@ public class UsuarioController {
 
     @GetMapping
     @Cacheable(value = "listaUsuario")
-    public List<UsuarioDto> list(UUID usuarioId){
-        if(usuarioId == null){
-            return UsuarioDto.converterUsuarioDtoList(usuarioService.list());
-        } else {
-            List<Usuario> usuarios = new ArrayList<>();
-            usuarios.add(usuarioService.findById(usuarioId).get());
+    public List<UsuarioDto> list(){
+            List<Usuario> usuarios = usuarioService.list();
             return UsuarioDto.converterUsuarioDtoList(usuarios);
-        }
+    }
+
+    @GetMapping
+    @RequestMapping("/page")
+    public Page<UsuarioDto> listPage( @PageableDefault(sort= {"nomeUsuario"}, direction = Direction.DESC, page = 0, size = 20) Pageable paginacao){
+        Page<Usuario> usuarios = usuarioService.findAll(paginacao);
+        return UsuarioDto.converterUsuarioDtoPage(usuarios);
     }
 
     @PostMapping
     @Transactional
-    @CacheEvict(value = "listUsuario", allEntries = true)
+	@CacheEvict(value = "listaUsuario", allEntries = true)
     public ResponseEntity<UsuarioDto> create(@RequestBody @Valid UsuarioForm usuarioForm, UriComponentsBuilder uriBuilder){
         Usuario usuario = usuarioForm.converter();
         usuarioService.save(usuario);
@@ -58,31 +63,22 @@ public class UsuarioController {
 
     @GetMapping("/id/{id}")
 	public ResponseEntity<UsuarioDto> findById(@PathVariable UUID id){
-		if(usuarioService.findById(id).isPresent()) {
-			return ResponseEntity.ok(new UsuarioDto(usuarioService.findById(id).get()));
-		}
-		return ResponseEntity.notFound().build();
+		return ResponseEntity.ok(new UsuarioDto(usuarioService.findById(id)));
 	}
 
     @PutMapping("/update/{id}")
 	@Transactional
 	@CacheEvict(value = "listaUsuario", allEntries = true)
 	public ResponseEntity<UsuarioDto> update(@PathVariable UUID id, @RequestBody @Valid UsuarioForm usuarioForm){
-		if(usuarioService.findById(id).isPresent()) {
-			Usuario usuario = usuarioForm.update(id, usuarioService);
-			return ResponseEntity.ok(new UsuarioDto(usuario));
-		}
-		return ResponseEntity.notFound().build();
+		Usuario usuario = usuarioForm.update(id, usuarioService);
+		return ResponseEntity.ok(new UsuarioDto(usuario));
 	}
 
     @DeleteMapping("/{id}")
 	@Transactional
 	@CacheEvict(value = "listaUsuario", allEntries = true)
 	public ResponseEntity<UsuarioDto> delete(@PathVariable UUID id){
-		if(usuarioService.findById(id).isPresent()) {
-			usuarioService.deleteById(id);
-			return ResponseEntity.ok().build();
-		}
-		return ResponseEntity.notFound().build();
+		usuarioService.deleteById(id);
+		return ResponseEntity.ok().build();
 	}
 }

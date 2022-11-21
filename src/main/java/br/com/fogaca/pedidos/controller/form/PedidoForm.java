@@ -11,9 +11,11 @@ import br.com.fogaca.pedidos.model.SituacaoPedido;
 import br.com.fogaca.pedidos.service.PedidoService;
 import br.com.fogaca.pedidos.service.ProdutoService;
 import br.com.fogaca.pedidos.service.UsuarioService;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
+@Getter
+@Setter
 public class PedidoForm {
     
     private String cpfCnpjComprador;
@@ -26,7 +28,21 @@ public class PedidoForm {
     private List<PedidoItem> itensPedido;
 
     public Pedido converter(UsuarioService usuarioService, PedidoService pedidoService, ProdutoService produtoService){
-        return new Pedido(cpfCnpjComprador, valor, desconto, valorTotal, situacaoPedido, dataCadastro, usuarioService.findById(usuarioId).get(), itensPedido);
+        return new Pedido(cpfCnpjComprador, valor, desconto, valorTotal, situacaoPedido, dataCadastro, usuarioService.findById(usuarioId), itensPedido);
+    }
+
+    public Pedido update(UUID id, PedidoService pedidoService, UsuarioService usuarioService) {
+        Pedido pedido = pedidoService.findById(id);
+        pedido.setCpfCnpjComprador(this.cpfCnpjComprador);
+        pedido.setValor(this.valor);
+        pedido.setDesconto(this.desconto);
+        pedido.setValorTotal(this.valorTotal);
+        pedido.setSituacaoPedido(this.situacaoPedido);
+        pedido.setDataCadastro(this.dataCadastro);
+        pedido.setUsuario(usuarioService.findById(this.usuarioId));
+        pedido.setItensPedido(this.itensPedido);
+
+        return null;
     }
     
 }

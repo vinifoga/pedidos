@@ -9,6 +9,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import br.com.fogaca.pedidos.exception.BadRequestException;
 import br.com.fogaca.pedidos.model.PedidoItem;
 import br.com.fogaca.pedidos.repository.PedidoItemRepository;
 
@@ -22,8 +23,8 @@ public class PedidoItemService {
         return pedidoItemRepository.findAll();
     }
 
-    public Optional<PedidoItem> findById(UUID id){
-        return pedidoItemRepository.findById(id);
+    public PedidoItem findById(UUID id){
+        return pedidoItemRepository.findById(id).orElseThrow(()-> new BadRequestException("Objeto não encontrado"));
     }
 
     public void save(PedidoItem itemPedido){
@@ -36,5 +37,9 @@ public class PedidoItemService {
 
     public Page<PedidoItem> findAll(Pageable pageable){
         return pedidoItemRepository.findAll(pageable);
+    }
+
+    public List<PedidoItem> findByPedidoId(UUID pedidoId){
+        return pedidoItemRepository.findByPedidoId(pedidoId);
     }
 }

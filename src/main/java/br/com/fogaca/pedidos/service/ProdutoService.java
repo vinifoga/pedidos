@@ -1,7 +1,6 @@
 package br.com.fogaca.pedidos.service;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +8,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import br.com.fogaca.pedidos.exception.BadRequestException;
 import br.com.fogaca.pedidos.model.ProdutoServico;
 import br.com.fogaca.pedidos.repository.ProdutoServicoRepository;
 
@@ -22,8 +22,8 @@ public class ProdutoService {
         return produtoRepository.findAll();
     }
 
-    public Optional<ProdutoServico> findById(UUID id){
-        return produtoRepository.findById(id);
+    public ProdutoServico findById(UUID id){
+        return produtoRepository.findById(id).orElseThrow(()-> new BadRequestException("Objeto não encontrado"));
     }
 
     public void save(ProdutoServico produto){

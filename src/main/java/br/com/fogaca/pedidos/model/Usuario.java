@@ -22,6 +22,13 @@ public class Usuario {
 
     public Usuario(String nomeUsuario) {
         this.nomeUsuario = nomeUsuario;
+    }
+
+    public Usuario(UUID id, String nomeUsuario) {
+        this.id = id;
+        this.nomeUsuario = nomeUsuario;
     }   
+
+    
     
 }

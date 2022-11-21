@@ -1,13 +1,19 @@
 package br.com.fogaca.pedidos.controller.dto;
 
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
+
+import org.springframework.data.domain.Page;
 
 import br.com.fogaca.pedidos.model.ProdutoServico;
 import br.com.fogaca.pedidos.model.Tipo;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
+@Getter
+@Setter
 public class ProdutoServicoDto {
     private UUID id;
     private Tipo tipo;
@@ -27,5 +33,13 @@ public class ProdutoServicoDto {
         this.valorVenda = produtoServico.getValorVenda();
         this.quantidadeDisponivel = produtoServico.getQuantidadeDisponivel();
         this.ativo = produtoServico.isAtivo();
+    }
+
+    public static Page<ProdutoServicoDto> converterProdutoDtoPage(Page<ProdutoServico> produtos){
+        return produtos.map(ProdutoServicoDto::new);
+    }
+
+    public static List<ProdutoServicoDto> converterProdutoDtoList(List<ProdutoServico> produtos){
+        return produtos.stream().map(ProdutoServicoDto::new).collect(Collectors.toList());
     }
 }
